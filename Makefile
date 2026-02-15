@@ -1,4 +1,4 @@
-OBJS = \
+WOBJS = \
 	bio.o\
 	console.o\
 	exec.o\
@@ -120,8 +120,8 @@ initcode: initcode.S
 	$(OBJCOPY) -S -O binary initcode.out initcode
 	$(OBJDUMP) -S initcode.o > initcode.asm
 
-kernel: $(OBJS) entry.o entryother initcode kernel.ld
-	$(LD) $(LDFLAGS) -T kernel.ld -o kernel entry.o $(OBJS) -b binary initcode entryother
+kernel: $(WOBJS) entry.o entryother initcode kernel.ld
+	$(LD) $(LDFLAGS) -T kernel.ld -o kernel entry.o $(WOBJS) -b binary initcode entryother
 	$(OBJDUMP) -S kernel > kernel.asm
 	$(OBJDUMP) -t kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > kernel.sym
 
@@ -167,6 +167,8 @@ mkfs: mkfs.c fs.h
 
 UPROGS=\
 	_cat\
+	_mysort\
+        _printstats\
 	_echo\
 	_forktest\
 	_grep\
@@ -180,19 +182,19 @@ UPROGS=\
 	_stressfs\
 	_usertests\
 	_wc\
-	_zombie\
+	_zombie
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
-
 -include *.d
 
-clean: 
+clean:
 	rm -f *.tex *.dvi *.idx *.aux *.log *.ind *.ilg \
 	*.o *.d *.asm *.sym vectors.S bootblock entryother \
 	initcode initcode.out kernel xv6.img fs.img kernelmemfs \
-	xv6memfs.img mkfs .gdbinit \
-	$(UPROGS)
+	xv6memfs.img mkfs .gdbinit
+	rm -f -- $(UPROGS)
+
 
 # make a printout
 FILES = $(shell grep -v '^\#' runoff.list)
