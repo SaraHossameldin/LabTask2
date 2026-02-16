@@ -82,9 +82,29 @@ int main(int argc, char *argv[]) {
     printf(1, "Count: %d\n", n);
     printf(1, "Min: %d\n", min);
     printf(1, "Max: %d\n", max);
-    printf(1, "Average: %d\n", (int)avg);
-    printf(1, "Median: %d\n", (int)median);
-    printf(1, "Std Dev: %d\n", (int)sd);
+    int intpart, fracpart;
+
+/* Average */
+intpart = (int)avg;
+fracpart = (int)((avg - intpart) * 100 + 0.5);
+printf(1, "Average: %d.", intpart);
+if(fracpart < 10) printf(1, "0");
+printf(1, "%d\n", fracpart);
+
+/* Median */
+intpart = (int)median;
+fracpart = (int)((median - intpart) * 100 + 0.5);
+printf(1, "Median: %d.", intpart);
+if(fracpart < 10) printf(1, "0");
+printf(1, "%d\n", fracpart);
+
+/* Std Dev */
+intpart = (int)sd;
+fracpart = (int)((sd - intpart) * 100 + 0.5);
+printf(1, "Std Dev: %d.", intpart);
+if(fracpart < 10) printf(1, "0");
+printf(1, "%d\n", fracpart);
+
 
     exit();
 }

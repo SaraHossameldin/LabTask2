@@ -8,6 +8,9 @@ putc(int fd, char c)
   write(fd, &c, 1);
 }
 
+
+
+
 static void
 printint(int fd, int xx, int base, int sgn)
 {
@@ -35,6 +38,22 @@ printint(int fd, int xx, int base, int sgn)
     putc(fd, buf[i]);
 }
 
+static void
+printfloat(int fd, double x)
+{
+  if(x < 0){
+    putc(fd, '-');
+    x = -x;
+  }
+
+  int intpart = (int)x;        // integer part
+  int fracpart = (int)((x - intpart) * 100 + 0.5); // two decimal places, rounded
+
+  printint(fd, intpart, 10, 0);
+  putc(fd, '.');
+  if(fracpart < 10) putc(fd, '0'); // pad single digit
+  printint(fd, fracpart, 10, 0);
+}
 // Print to the given fd. Only understands %d, %x, %p, %s.
 void
 printf(int fd, const char *fmt, ...)
@@ -74,7 +93,13 @@ printf(int fd, const char *fmt, ...)
         ap++;
       } else if(c == '%'){
         putc(fd, c);
-      } else {
+      }
+else if(c == 'f'){
+  double d = *(double*)ap;  // get double argument
+  printfloat(fd, d);
+  ap += 2; // double takes 2 uint slots on 32-bit xv6
+}
+ else {
         // Unknown % sequence.  Print it to draw attention.
         putc(fd, '%');
         putc(fd, c);
